@@ -15,6 +15,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// URL Normalization Middleware for Vercel Serverless Routing compatibility
+app.use((req, res, next) => {
+  if (!req.url.startsWith('/api')) {
+    req.url = '/api' + req.url;
+  }
+  next();
+});
+
 // Use OS temporary directory for Serverless environment compatibility (Vercel /tmp)
 const uploadDir = os.tmpdir();
 
