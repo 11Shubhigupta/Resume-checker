@@ -3,6 +3,7 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const { extractTextFromFile } = require('./parser');
 const { scoreResume } = require('./scorer');
 
@@ -14,11 +15,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Ensure upload directory exists inside workspace
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+// Use OS temporary directory for Serverless environment compatibility (Vercel /tmp)
+const uploadDir = os.tmpdir();
 
 // Multer Disk Storage Configuration
 const storage = multer.diskStorage({
